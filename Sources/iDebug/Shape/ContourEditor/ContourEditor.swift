@@ -13,33 +13,55 @@ public final class ContourEditor: ObservableObject, Identifiable {
     
     public var onUpdate: (([CGPoint]) -> ())?
 
-    private (set) var points: [CGPoint] = []
-    
-    
+    private (set) var color: Color
+    private (set) var stroke: CGFloat = 2
+    private (set) var showArrows: Bool = true
+
+    private let showIndex: Bool
+    public private (set) var points: [CGPoint] = []
     private (set) var screenPoints: [CGPoint] = []
     private var selectedId = -1
     private var selectedStart: CGPoint = .zero
     
-    public var dots: [EditorDot] {
-        screenPoints = matrix.screen(wordPoints: points)
-        var buffer = [EditorDot](repeating: .empty, count: screenPoints.count)
+    public var data: (dots: [EditorDot], arrows: [Arrow]) {
+        guard !points.isEmpty else {
+            return ([], [])
+        }
+        
+        screenPoints = matrix.screen(worldPoints: points)
+        var dots = [EditorDot](repeating: .empty, count: screenPoints.count)
+        var arrows = [Arrow](repeating: .empty, count: screenPoints.count)
         let radius: CGFloat = 3
         let touchRadius: CGFloat = 22
+        var p0 = screenPoints[screenPoints.count - 1]
         for i in 0..<screenPoints.count {
-            let center = screenPoints[i] - CGPoint(x: radius, y: radius)
-            let touchCenter = screenPoints[i] - CGPoint(x: touchRadius, y: touchRadius)
+            let p1 = screenPoints[i]
+            let center = p1 - CGPoint(x: radius, y: radius)
+            let touchCenter = p1 - CGPoint(x: touchRadius, y: touchRadius)
             let touchColor: Color = selectedId == i ? .black.opacity(0.15) : .black.opacity(0.05)
             
-            buffer[i] = EditorDot(id: i, center: center, touchCenter: touchCenter, radius: radius, touchRadius: touchRadius, color: .gray, touchColor: touchColor, title: nil)
+            let title: String? = showIndex ? String(i) : nil
+            
+            dots[i] = EditorDot(id: i, center: center, touchCenter: touchCenter, radius: radius, touchRadius: touchRadius, color: .gray, touchColor: touchColor, title: title)
+            
+            let m = 0.5 * (p0 + p1)
+            let n = (p1 - p0).normalize
+            
+            arrows[i] = Arrow(id: i, start: m - 4 * n, end: m + 4 * n, arrowColor: color, tailColor: color, lineWidth: stroke)
+            
+            p0 = p1
         }
 
-        return buffer
+        return (dots, arrows)
     }
     
     private let scale: CGFloat
     
-    public init(scale: CGFloat = 1) {
+    public init(scale: CGFloat = 1, showIndex: Bool = false, color: Color = .gray, showArrows: Bool = true) {
+        self.color = color
         self.scale = scale
+        self.showIndex = showIndex
+        self.showArrows = showArrows
     }
     
     public func set(points: [CGPoint]) {
@@ -74,9 +96,15 @@ public final class ContourEditor: ObservableObject, Identifiable {
         let newPoint = selectedStart + matrix.world(screenVector: CGPoint(x: move.width, y: move.height))
         if newPoint != points[id] || selectedId == -1 {
             points[id] = newPoint.round(scale: scale)
-            screenPoints = matrix.screen(wordPoints: points)
+            screenPoints = matrix.screen(worldPoints: points)
             onUpdate?(points)
             self.objectWillChange.send()
         }
+    }
+    
+    public func set(stroke: CGFloat, color: Color) {
+        self.stroke = stroke
+        self.color = color
+        self.objectWillChange.send()
     }
 }

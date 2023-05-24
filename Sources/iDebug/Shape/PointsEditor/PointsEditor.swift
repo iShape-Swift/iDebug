@@ -12,7 +12,7 @@ public final class PointsEditor: ObservableObject {
     public var matrix: Matrix = .empty
     public var onUpdate: (([CGPoint]) -> ())?
 
-    private (set) var points: [CGPoint] = []
+    public private (set) var points: [CGPoint] = []
     private (set) var screenPoints: [CGPoint] = []
     
     private var selectedId = -1
@@ -56,6 +56,11 @@ public final class PointsEditor: ObservableObject {
         PointsEditorView(editor: self)
     }
     
+    public func makeView(matrix: Matrix) -> PointsEditorView {
+        self.matrix = matrix
+        return PointsEditorView(editor: self)
+    }
+    
     public func onDrag(id: Int, move: CGSize) {
         if selectedId == -1 {
             selectedId = id
@@ -79,7 +84,7 @@ public final class PointsEditor: ObservableObject {
     }
     
     public func reload() {
-        screenPoints = matrix.screen(wordPoints: points)
+        screenPoints = matrix.screen(worldPoints: points)
         self.objectWillChange.send()
     }
     

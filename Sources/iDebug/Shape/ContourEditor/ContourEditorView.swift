@@ -13,19 +13,26 @@ public struct ContourEditorView: View {
     public var editor: ContourEditor
     
     public var body: some View {
-        let dots = editor.dots
+        let data = editor.data
         return ZStack() {
             Path { path in
                 path.addLines(editor.screenPoints)
                 path.closeSubpath()
-            }.strokedPath(.init(lineWidth: 2)).foregroundColor(.gray)
-            ForEach(dots) { dot in
+            }.strokedPath(.init(lineWidth: editor.stroke)).foregroundColor(editor.color)
+            ForEach(data.dots) { dot in
                 Circle()
                     .size(width: 2 * dot.radius, height: 2 * dot.radius)
                     .offset(dot.center)
                     .foregroundColor(dot.color)
+                if let title = dot.title {
+                    Text(title).font(.title3).foregroundColor(editor.color).position(dot.center + CGPoint(x: 8, y: -8))
+                }
             }
-            ForEach(dots) { dot in
+            ForEach(data.arrows) { arrow in
+                ArrowView(arrow: arrow)
+            }
+
+            ForEach(data.dots) { dot in
                 Circle()
                     .size(width: 2 * dot.touchRadius, height: 2 * dot.touchRadius)
                     .offset(dot.touchCenter)

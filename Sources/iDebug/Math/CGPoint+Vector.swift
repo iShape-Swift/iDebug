@@ -58,3 +58,24 @@ public extension FixVec {
     }
     
 }
+
+public extension Array where Element == CGPoint {
+
+    func prettyPrint() -> String {
+        var s = "[\n"
+        for i in 0..<self.count {
+            let p = self[i]
+            if i + 1 != self.count {
+                s += "CGPoint(x: \(p.x), y: \(p.y)),\n"
+            } else {
+                s += "CGPoint(x: \(p.x), y: \(p.y))\n"
+            }
+        }
+        s += "]"
+        
+        return s
+    }
+    
+}
+
+

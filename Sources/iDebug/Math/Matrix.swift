@@ -56,7 +56,7 @@ public struct Matrix {
     }
     
     @inlinable
-    public func screen(wordPoints points: [CGPoint]) -> [CGPoint] {
+    public func screen(worldPoints points: [CGPoint]) -> [CGPoint] {
         var result = [CGPoint](repeating: .zero, count: points.count)
         for i in 0..<points.count {
             result[i] = screen(worldPoint: points[i])
