@@ -9,7 +9,8 @@ import SwiftUI
 
 public final class ContourEditor: ObservableObject, Identifiable {
 
-    private var matrix: Matrix = .empty
+    @Published
+    public var matrix: Matrix = .empty
     
     public var onUpdate: (([CGPoint]) -> ())?
 
@@ -18,6 +19,7 @@ public final class ContourEditor: ObservableObject, Identifiable {
     private (set) var showArrows: Bool = true
 
     private let showIndex: Bool
+    private let indexOffset: Int
     public private (set) var points: [CGPoint] = []
     private (set) var screenPoints: [CGPoint] = []
     private var selectedId = -1
@@ -40,7 +42,7 @@ public final class ContourEditor: ObservableObject, Identifiable {
             let touchCenter = p1 - CGPoint(x: touchRadius, y: touchRadius)
             let touchColor: Color = selectedId == i ? .black.opacity(0.15) : .black.opacity(0.05)
             
-            let title: String? = showIndex ? String(i) : nil
+            let title: String? = showIndex ? String(i + indexOffset) : nil
             
             dots[i] = EditorDot(id: i, center: center, touchCenter: touchCenter, radius: radius, touchRadius: touchRadius, color: .gray, touchColor: touchColor, title: title)
             
@@ -57,10 +59,11 @@ public final class ContourEditor: ObservableObject, Identifiable {
     
     private let scale: CGFloat
     
-    public init(scale: CGFloat = 1, showIndex: Bool = false, color: Color = .gray, showArrows: Bool = true) {
+    public init(scale: CGFloat = 1, indexOffset: Int = 0, showIndex: Bool = false, color: Color = .gray, showArrows: Bool = true) {
         self.color = color
         self.scale = scale
         self.showIndex = showIndex
+        self.indexOffset = indexOffset
         self.showArrows = showArrows
     }
     
@@ -71,9 +74,10 @@ public final class ContourEditor: ObservableObject, Identifiable {
     
     public func makeView(matrix: Matrix) -> ContourEditorView {
         if !self.matrix.screenSize.isIntSame(matrix.screenSize) {
-            self.matrix = matrix
             DispatchQueue.main.async { [weak self] in
-                self?.objectWillChange.send()
+                guard let self = self else { return }
+                self.matrix = matrix
+                self.objectWillChange.send()
             }
         }
         return ContourEditorView(editor: self)

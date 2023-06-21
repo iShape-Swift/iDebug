@@ -15,6 +15,7 @@ public struct Matrix {
     public let screenSize: CGSize
     public let toWorld: simd_float3x3
     public let toScreen: simd_float3x3
+    public var scale: CGFloat { CGFloat(toScreen.columns.0.x) }
     
     public var isZero: Bool { screenSize == .zero }
     
