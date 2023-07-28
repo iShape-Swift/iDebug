@@ -18,9 +18,11 @@ public final class PointsEditor: ObservableObject {
     private var selectedId = -1
     private var selectedStart: CGPoint = .zero
     private let scale: CGFloat
+    private let showIndex: Bool
     
-    public init(scale: CGFloat = 1) {
+    public init(scale: CGFloat = 1, showIndex: Bool = true) {
         self.scale = scale
+        self.showIndex = showIndex
     }
     
     public var dots: [EditorDot] {
@@ -32,6 +34,8 @@ public final class PointsEditor: ObservableObject {
             let touchCenter = screenPoints[i] - CGPoint(x: touchRadius, y: touchRadius)
             let touchColor: Color = selectedId == i ? .black.opacity(0.15) : .black.opacity(0.05)
             
+            let title = showIndex ? String(i) : ""
+            
             buffer[i] = EditorDot(
                 id: i,
                 center: center,
@@ -40,7 +44,7 @@ public final class PointsEditor: ObservableObject {
                 touchRadius: touchRadius,
                 color: .gray,
                 touchColor: touchColor,
-                title: String(i)
+                title: title
             )
         }
 
