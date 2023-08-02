@@ -44,7 +44,7 @@ public final class ContourEditor: ObservableObject, Identifiable {
             
             let title: String? = showIndex ? String(i + indexOffset) : nil
             
-            dots[i] = EditorDot(id: i, center: center, touchCenter: touchCenter, radius: radius, touchRadius: touchRadius, color: .gray, touchColor: touchColor, title: title)
+            dots[i] = EditorDot(id: i, center: center, touchCenter: touchCenter, radius: radius, touchRadius: touchRadius, color: color, touchColor: touchColor, title: title)
             
             let m = 0.5 * (p0 + p1)
             let n = (p1 - p0).normalize
