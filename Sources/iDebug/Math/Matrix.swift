@@ -44,19 +44,19 @@ public struct Matrix {
     }
 
     
-    @inlinable
+    @inline(__always)
     public func screen(world l: CGFloat) -> CGFloat {
         CGFloat(toScreen.columns.0.x) * l
     }
     
-    @inlinable
+    @inline(__always)
     public func screen(worldPoint p: CGPoint) -> CGPoint {
         let v = simd_float3(Float(p.x), Float(p.y), 1)
         let r = toScreen * v
         return CGPoint(x: CGFloat(r.x), y: CGFloat(r.y))
     }
     
-    @inlinable
+    @inline(__always)
     public func screen(worldPoints points: [CGPoint]) -> [CGPoint] {
         var result = [CGPoint](repeating: .zero, count: points.count)
         for i in 0..<points.count {
@@ -65,21 +65,21 @@ public struct Matrix {
         return result
     }
     
-    @inlinable
+    @inline(__always)
     public func world(screenPoint p: CGPoint) -> CGPoint {
         let v = simd_float3(Float(p.x), Float(p.y), 1)
         let r = toWorld * v
         return CGPoint(x: CGFloat(r.x), y: CGFloat(r.y))
     }
 
-    @inlinable
+    @inline(__always)
     public func world(screenVector s: CGPoint) -> CGPoint {
         let v = simd_float3(Float(s.x), Float(s.y), 0)
         let r = toWorld * v
         return CGPoint(x: CGFloat(r.x), y: CGFloat(r.y))
     }
     
-    @inlinable
+    @inline(__always)
     public func world(screenPoints points: [CGPoint]) -> [CGPoint] {
         var result = [CGPoint](repeating: .zero, count: points.count)
         for i in 0..<points.count {
