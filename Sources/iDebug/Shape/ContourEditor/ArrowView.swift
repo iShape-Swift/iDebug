@@ -1,6 +1,6 @@
 //
 //  ArrowView.swift
-//  
+//
 //
 //  Created by Nail Sharipov on 22.05.2023.
 //
@@ -19,6 +19,7 @@ public struct Arrow: Identifiable {
     public let tailColor: Color
     public let lineWidth: CGFloat
     public let angle: Float
+    public let radius: CGFloat
     
     public init(
         id: Int,
@@ -27,7 +28,8 @@ public struct Arrow: Identifiable {
         arrowColor: Color = .gray,
         tailColor: Color = .gray,
         lineWidth: CGFloat = 2,
-        angle: Float = 20
+        angle: Float = 20,
+        radius: CGFloat = 1
     ) {
         self.id = id
         self.start = start
@@ -36,6 +38,7 @@ public struct Arrow: Identifiable {
         self.tailColor = tailColor
         self.lineWidth = lineWidth
         self.angle = angle
+        self.radius = radius
     }
 
 }
@@ -66,8 +69,8 @@ public struct ArrowView: View {
 private extension Arrow {
     
     var endPoints: [CGPoint] {
-        let dir = end - start
-        let v = 0.7 * simd_float2(Float(dir.x), Float(dir.y))
+        let dir = (end - start).normalize
+        let v = simd_float2(Float(dir.x), Float(dir.y))
         let rad = angle.gradToRad
         let cs = cos(rad)
         let sn = sin(rad)
@@ -80,9 +83,9 @@ private extension Arrow {
         let a0 = CGPoint(x: CGFloat(aw0.x), y: CGFloat(aw0.y))
         let a1 = CGPoint(x: CGFloat(aw1.x), y: CGFloat(aw1.y))
        
-        let p0 = end - a0
+        let p0 = end - radius * a0
         let p1 = end
-        let p2 = end - a1
+        let p2 = end - radius * a1
 
         return [p0, p1, p2]
     }
