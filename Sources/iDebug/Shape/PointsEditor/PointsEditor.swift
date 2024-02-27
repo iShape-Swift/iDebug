@@ -25,6 +25,12 @@ public final class PointsEditor: ObservableObject {
         self.showIndex = showIndex
     }
     
+    public init(matrix: Matrix) {
+        self.matrix = matrix
+        self.scale = 1
+        self.showIndex = false
+    }
+    
     public var dots: [EditorDot] {
         var buffer = [EditorDot](repeating: .empty, count: screenPoints.count)
         let radius: CGFloat = 3
