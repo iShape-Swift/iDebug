@@ -27,6 +27,10 @@ public extension CGPoint {
         FixVec(x.fix, y.fix)
     }
     
+    var point: Point {
+        Point(Int32(x.fix), Int32(y.fix))
+    }
+    
     func round(scale: CGFloat) -> CGPoint {
         let rx = (x / scale).rounded() * scale
         let ry = (y / scale).rounded() * scale
