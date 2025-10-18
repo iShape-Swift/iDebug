@@ -79,5 +79,23 @@ public extension Array where Element == CGPoint {
         
         return s
     }
+
+    func arrayPrint() -> String {
+        let reversed = Array(self.reversed())
+        var s = "[\n"
+        for i in 0..<reversed.count {
+            let p = reversed[i]
+            let x = Int(p.x)
+            let y = Int(p.y)
+            if i + 1 != reversed.count {
+                s += "[\(x), \(y)], "
+            } else {
+                s += "[\(x), \(y)]"
+            }
+        }
+        s += "]"
+        
+        return s
+    }
     
 }

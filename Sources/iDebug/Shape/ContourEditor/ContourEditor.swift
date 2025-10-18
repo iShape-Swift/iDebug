@@ -14,9 +14,9 @@ public final class ContourEditor: ObservableObject, Identifiable {
     
     public var onUpdate: (([CGPoint]) -> ())?
 
-    private (set) var color: Color
-    private (set) var stroke: CGFloat = 2
-    private (set) var showArrows: Bool = true
+    private(set) var color: Color
+    private(set) var stroke: CGFloat = 2
+    private(set) var showArrows: Bool = true
 
     private let showIndex: Bool
     private let indexOffset: Int
